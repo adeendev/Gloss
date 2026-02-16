@@ -1,0 +1,20 @@
+{
+  "name": "booking_reminder",
+  "category": "UTILITY",
+  "language": "en_US",
+  "components": [
+    {
+      "type": "HEADER",
+      "format": "TEXT",
+      "text": "⏰ Appointment Reminder"
+    },
+    {
+      "type": "BODY",
+      "text": "Hi {{1}}, this is a reminder that your {{2}} appointment is tomorrow!\n\n📅 Date: {{3}}\n⏰ Time: {{4}}\n⏱️ Duration: {{5}}\n📍 Location: {{6}}\n\nSee you soon!"
+    },
+    {
+      "type": "FOOTER",
+      "text": "{{7}}"
+    }
+  ]
+}

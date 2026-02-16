@@ -1,0 +1,30 @@
+{
+  "name": "completion_invoice",
+  "category": "UTILITY",
+  "language": "en_US",
+  "components": [
+    {
+      "type": "HEADER",
+      "format": "TEXT",
+      "text": "🎉 Service Completed"
+    },
+    {
+      "type": "BODY",
+      "text": "Hi {{1}}, your {{2}} service is now complete!\n\n✨ Your vehicle looks amazing!\n💰 Advance Paid: {{3}}\n💵 Remaining Balance: {{4}}\n\nPlease complete your payment to finalize the service."
+    },
+    {
+      "type": "FOOTER",
+      "text": "{{5}}"
+    },
+    {
+      "type": "BUTTONS",
+      "buttons": [
+        {
+          "type": "URL",
+          "text": "Pay Now",
+          "url": "{{6}}"
+        }
+      ]
+    }
+  ]
+}

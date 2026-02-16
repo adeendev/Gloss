@@ -1,0 +1,20 @@
+{
+  "name": "service_started",
+  "category": "UTILITY",
+  "language": "en_US",
+  "components": [
+    {
+      "type": "HEADER",
+      "format": "TEXT",
+      "text": "🚗 Service Started"
+    },
+    {
+      "type": "BODY",
+      "text": "Hi {{1}}, great news! We've started working on your {{2}} service.\n\n⏰ Started at: {{3}}\n📍 Location: {{4}}\n\nOur team is now taking care of your vehicle. We'll notify you when it's complete!"
+    },
+    {
+      "type": "FOOTER",
+      "text": "{{5}}"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "payment_confirmation",
+  "category": "UTILITY",
+  "language": "en_US",
+  "components": [
+    {
+      "type": "HEADER",
+      "format": "TEXT",
+      "text": "💳 Payment Received"
+    },
+    {
+      "type": "BODY",
+      "text": "Hi {{1}}, we have received your advance payment!\n\n💰 Amount: {{2}}\n🚗 Service: {{3}}\n📅 Appointment: {{4}} at {{5}}\n\nYour booking is now confirmed. We'll send you a reminder the day before."
+    },
+    {
+      "type": "FOOTER",
+      "text": "{{6}}"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "name": "final_payment_confirmation",
+  "category": "UTILITY",
+  "language": "en_US",
+  "components": [
+    {
+      "type": "HEADER",
+      "format": "TEXT",
+      "text": "🎉 Payment Complete"
+    },
+    {
+      "type": "BODY",
+      "text": "Hi {{1}}, thank you for your payment of {{2}}!\n\n✅ Your {{3}} service is now fully paid\n🚗💎 We hope you're delighted with the results!\n\n⭐ Please share your experience with others by leaving us a review."
+    },
+    {
+      "type": "FOOTER",
+      "text": "{{4}}"
+    },
+    {
+      "type": "BUTTONS",
+      "buttons": [
+        {
+          "type": "URL",
+          "text": "Leave Review ⭐",
+          "url": "{{5}}"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "booking_confirmation",
+  "category": "UTILITY",
+  "language": "en_US",
+  "components": [
+    {
+      "type": "HEADER",
+      "format": "TEXT",
+      "text": "✅ Booking Confirmed"
+    },
+    {
+      "type": "BODY",
+      "text": "Hi {{1}}, your {{2}} appointment is confirmed!\n\n📅 Date: {{3}}\n⏰ Time: {{4}}\n⏱️ Duration: {{5}}\n💰 Advance Paid: {{6}}\n💵 Remaining: {{7}}\n\nWe look forward to serving you!"
+    },
+    {
+      "type": "FOOTER",
+      "text": "{{8}}"
+    }
+  ]
+}

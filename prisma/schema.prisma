@@ -1,0 +1,210 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Business {
+  id              String   @id @default(cuid())
+  name            String
+  email           String   @unique
+  phone           String
+  address         String?
+  googlePlaceId   String?
+  logo            String?
+  timezone        String   @default("UTC")
+  currency        String   @default("USD")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  services        Service[]
+  bookings        Booking[]
+  users           User[]
+  settings        BusinessSettings?
+  whatsappChats   WhatsAppChat[]
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  password      String
+  name          String
+  role          String   @default("ADMIN")
+  businessId    String
+  business      Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// enum Role {
+//   ADMIN
+//   STAFF
+// }
+
+model Service {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  price       Float
+  duration    Int
+  businessId  String
+  business    Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  bookings    Booking[]
+}
+
+model Booking {
+  id              String          @id @default(cuid())
+  businessId      String
+  business        Business        @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  serviceId       String
+  service         Service         @relation(fields: [serviceId], references: [id])
+  
+  customerName    String
+  customerPhone   String
+  customerEmail   String?
+  
+  scheduledAt     DateTime
+  duration        Int
+  status          String          @default("PENDING")
+  notes           String?
+  
+  totalAmount     Float
+  advanceAmount   Float
+  advancePaid     Boolean         @default(false)
+  fullPaymentPaid Boolean         @default(false)
+  paymentMethod   String?
+  stripePaymentIntentId String?   @unique
+  
+  completedAt     DateTime?
+  cancelledAt     DateTime?
+  
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  
+  payments        Payment[]
+  notifications   Notification[]
+}
+
+// enum BookingStatus {
+//   PENDING
+//   CONFIRMED
+//   IN_PROGRESS
+//   COMPLETED
+//   CANCELLED
+// }
+
+// enum PaymentMethod {
+//   STRIPE
+//   CASH
+// }
+
+model Payment {
+  id              String        @id @default(cuid())
+  bookingId       String
+  booking         Booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  
+  amount          Float
+  method          String
+  status          String        @default("PENDING")
+  
+  stripePaymentId String?       @unique
+  
+  paidAt          DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+// enum PaymentStatus {
+//   PENDING
+//   COMPLETED
+//   FAILED
+//   REFUNDED
+// }
+
+model Notification {
+  id          String           @id @default(cuid())
+  bookingId   String
+  booking     Booking          @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  
+  type        String
+  channel     String
+  recipient   String
+  content     String
+  status      String           @default("pending")
+  sentAt      DateTime?
+  
+  createdAt   DateTime         @default(now())
+}
+
+// enum NotificationType {
+//   BOOKING_CONFIRMATION
+//   BOOKING_REMINDER
+//   COMPLETION_INVOICE
+//   REVIEW_REQUEST
+//   PAYMENT_CONFIRMATION
+// }
+
+model WhatsAppChat {
+  id            String            @id @default(cuid())
+  businessId    String
+  business      Business          @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  
+  customerPhone String
+  customerName  String?
+  
+  lastMessageAt DateTime          @default(now())
+  unreadCount   Int               @default(0)
+  
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  
+  messages      WhatsAppMessage[]
+  
+  @@unique([businessId, customerPhone])
+}
+
+model WhatsAppMessage {
+  id          String       @id @default(cuid())
+  chatId      String
+  chat        WhatsAppChat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  
+  messageId   String       @unique
+  direction   String
+  content     String
+  mediaUrl    String?
+  status      String?
+  
+  createdAt   DateTime     @default(now())
+  
+  @@index([chatId, createdAt])
+}
+
+model BusinessSettings {
+  id                    String   @id @default(cuid())
+  businessId            String   @unique
+  business              Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  
+  workingHoursStart     String   @default("09:00")
+  workingHoursEnd       String   @default("18:00")
+  workingDays           String   @default("MON,TUE,WED,THU,FRI")
+  
+  slotDuration          Int      @default(30)
+  advanceBookingDays    Int      @default(30)
+  minAdvanceHours       Int      @default(2)
+  
+  advancePaymentPercent Float    @default(20)
+  
+  sendWhatsApp          Boolean  @default(true)
+  sendEmail             Boolean  @default(false)
+  sendSMS               Boolean  @default(false)
+  
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
