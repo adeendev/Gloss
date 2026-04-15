@@ -116,6 +116,20 @@ export async function GET(request: NextRequest) {
       },
     })
 
+    // Revenue by service
+    const revenueByServiceMap = new Map<string, number>()
+    bookings.forEach((b) => {
+      if (b.status === 'COMPLETED' || b.advancePaid) {
+        const serviceName = b.service?.name || 'Unknown'
+        const amount = b.totalAmount || 0
+        revenueByServiceMap.set(serviceName, (revenueByServiceMap.get(serviceName) || 0) + amount)
+      }
+    })
+    const revenueByService = Array.from(revenueByServiceMap.entries()).map(([name, value]) => ({
+      name,
+      value,
+    }))
+
     // Top automation flows from notifications types
     const notifByType = await prisma.notification.groupBy({
       by: ['type'],
@@ -178,6 +192,7 @@ export async function GET(request: NextRequest) {
       },
       topAutomationFlows,
       bookingTrends,
+      revenueByService,
     })
   } catch (error) {
     console.error('Analytics GET error:', error)

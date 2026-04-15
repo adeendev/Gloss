@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -24,7 +24,7 @@ interface Booking {
   }
 }
 
-export default function ConfirmationPage() {
+function ConfirmationContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [booking, setBooking] = useState<Booking | null>(null)
@@ -180,5 +180,21 @@ export default function ConfirmationPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function ConfirmationPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Card className="p-12 text-center">
+          <Loader2 className="h-16 w-16 text-blue-500 mx-auto mb-4 animate-spin" />
+          <h2 className="text-2xl font-bold mb-2">Loading...</h2>
+          <p className="text-gray-600">Confirming your booking details</p>
+        </Card>
+      </div>
+    }>
+      <ConfirmationContent />
+    </Suspense>
   )
 }
