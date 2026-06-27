@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 
-console.log('🚗 Car Detailing Booking System - Post Install Setup');
+console.log('✨ Gloss - Post Install Setup');
 console.log('====================================================\n');
 
 // Check if .env.local exists

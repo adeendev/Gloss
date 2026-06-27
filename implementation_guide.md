@@ -1,4 +1,4 @@
-# 🚗 Car Detailing Booking System - Complete Implementation Guide
+# ✨ Gloss — Complete Implementation Guide
 
 ## 📦 What You've Received
 
@@ -21,10 +21,10 @@ A production-ready, full-stack booking system with:
 
 ```bash
 # Create Next.js app
-npx create-next-app@latest car-detailing-booking --typescript --tailwind --app
+npx create-next-app@latest gloss --typescript --tailwind --app
 
 # Navigate to directory
-cd car-detailing-booking
+cd gloss
 ```
 
 ### 2. Copy All Files
@@ -32,7 +32,7 @@ cd car-detailing-booking
 Copy all the provided code files into your project following this structure:
 
 ```
-car-detailing-booking/
+gloss/
 ├── prisma/
 │   ├── schema.prisma
 │   └── seed.ts

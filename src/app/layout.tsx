@@ -12,8 +12,8 @@ import { AuthSessionProvider } from '@/components/providers/session-provider'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Car Detailing Booking System',
-  description: 'Professional car detailing booking and management system',
+  title: 'Gloss — Car Detailing Booking Platform',
+  description: 'Premium booking, payments, and communication platform for car detailing businesses',
 }
 
 export default function RootLayout({

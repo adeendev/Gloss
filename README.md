@@ -1,144 +1,445 @@
-# Car Detailing Booking System
+<p align="center">
+  <br/>
+  <img src="https://img.shields.io/badge/Next.js-14-000000?logo=nextdotjs&style=for-the-badge" alt="Next.js 14"/>
+  <img src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&style=for-the-badge" alt="TypeScript"/>
+  <img src="https://img.shields.io/badge/Prisma-2D3748?logo=prisma&style=for-the-badge" alt="Prisma"/>
+  <img src="https://img.shields.io/badge/Stripe-635BFF?logo=stripe&style=for-the-badge" alt="Stripe"/>
+  <img src="https://img.shields.io/badge/WhatsApp-25D366?logo=whatsapp&style=for-the-badge" alt="WhatsApp API"/>
+  <img src="https://img.shields.io/badge/TailwindCSS-06B6D4?logo=tailwindcss&style=for-the-badge" alt="Tailwind CSS"/>
+  <br/>
+  <img src="https://img.shields.io/badge/license-MIT-emerald?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/status-production--ready-brightgreen?style=for-the-badge"/>
+</p>
 
-A full-stack booking platform for car detailing businesses built with `Next.js 14`, `Prisma`, `Stripe`, `TailwindCSS`, and WhatsApp Business API automations.
+<br/>
 
-## Overview
-- End‑to‑end customer booking flow with advance payment.
-- Admin dashboard to manage bookings and track services.
-- Automated WhatsApp messaging: confirmations, reminders, service updates, and payment receipts.
-- Configurable business hours, slots, and payment percentage.
+<h1 align="center">
+  ✨ GLOSS
+</h1>
 
-## Tech Stack
-- Framework: `Next.js 14` (App Router)
-- Database ORM: `Prisma`
-- UI: `TailwindCSS`, `Radix UI`, custom components in `src/components/ui`
-- Auth: `next-auth`
-- Payments: `Stripe`
-- Messaging: WhatsApp Business Cloud API
-- Charts/Analytics: `recharts`
+<h3 align="center">
+  The premium booking & operations platform for car detailing businesses.
+</h3>
 
-## Project Structure
-- `src/app/page.tsx` — Public landing page with services and CTA.
-- `src/app/booking/page.tsx` — Customer booking flow.
-- `src/app/confirmation/page.tsx` — Post‑booking confirmation view.
-- `src/app/admin/*` — Admin area: dashboard, bookings, payments, analytics, settings.
-- `src/app/api/*` — API routes for bookings, payments, WhatsApp, admin features.
-- `prisma/schema.prisma` — Database models.
-- `scripts/*` — Setup and environment helpers.
+<p align="center">
+  <b>Booking flow</b> · <b>WhatsApp automation</b> · <b>Stripe payments</b> · <b>Multi-tenant admin</b>
+</p>
 
-## Design System
-- UI primitives in `src/components/ui` (button, card, input, select, tabs, etc.).
-- TailwindCSS utility classes with light effects, gradients, and glass card visuals.
-- Icons via `lucide-react`.
+<br/>
 
-Example usages:
-- Landing page CTA buttons in `src/app/page.tsx:141`.
-- Booking form visuals in `src/components/booking/BookingForm.tsx:203`.
+<p align="center">
+  <a href="#-features">Features</a> •
+  <a href="#-quick-start">Quick Start</a> •
+  <a href="#-workflow">Workflow</a> •
+  <a href="#-admin-panel">Admin</a> •
+  <a href="#-stack">Stack</a> •
+  <a href="#-api">API</a> •
+  <a href="#-deploy">Deploy</a>
+</p>
 
-## Booking Flow
-Customer path is split into steps: select service → pick date/time → enter info → pay advance → confirmation.
+<br/>
 
-- Step state machine in `src/app/booking/page.tsx:24`.
-- Service selection: `ServiceSelector` renders available services.
-- Availability: time slots via `src/app/api/bookings/available-slots/route.ts`.
-- Submit info triggers payment‑first flow:
-  - Create Stripe PaymentIntent with booking metadata in `src/app/api/payments/stripe/create-intent-prebooking/route.ts:60`.
-  - Store `paymentIntentId` temporarily and proceed to `PaymentSection`.
-- Payment success finalizes booking in either route:
-  - Webhook path for automatic creation from metadata `src/app/api/payments/stripe/webhook/route.ts:57`.
-  - Client success handler `src/app/api/payments/stripe/success/route.ts:98` (handles both booking‑first and payment‑first).
+---
 
-UI states and transitions are implemented in `src/app/booking/page.tsx:190` and `src/app/booking/page.tsx:355`.
+## 🌟 Why Gloss?
 
-## Payments
-- Advance payment percentage configurable in `BusinessSettings.advancePaymentPercent` (`prisma/schema.prisma:202`).
-- Payment intent creation and metadata packing in `src/app/api/payments/stripe/create-intent-prebooking/route.ts`.
-- Webhook verifies signatures and creates bookings/payments in `src/app/api/payments/stripe/webhook/route.ts`.
-- Success route records payments and sends confirmations in `src/app/api/payments/stripe/success/route.ts`.
-- Admin can request final payments after service completion; revenue tallied in analytics `src/app/admin/analytics/page.tsx:79`.
+> Most booking systems are generic. **Gloss** is built *for* detailers, *by* people who understand the craft.
 
-## WhatsApp Automations
-Event‑driven messages for key points:
-- Booking confirmation on successful advance payment `src/app/api/payments/stripe/success/route.ts:98`.
-- Reminder 24h before service via cron `src/app/api/cron/send-reminders/route.ts`.
-- Service started notification `src/app/api/bookings/[id]/start-service/route.ts:59`.
-- Service completion notification with payment link.
-- Final payment confirmation and review link template `whatsapp-templates/final_payment_confirmation.json`.
-- Webhook handling for inbound/outbound messages `src/app/api/whatsapp/webhook/route.ts:1`.
+Gloss handles the entire customer journey—from the moment they pick a service to the moment they leave a Google review—while you focus on the work.
 
-Templates can be generated with `npm run whatsapp:templates`.
+| Without Gloss | With Gloss |
+|---|---|
+| Phone-tag bookings scattered across text messages | Self-serve 24/7 booking with instant confirmation |
+| Manual payment chasing | Stripe-powered advance + final payments, automated |
+| Forgetting to remind customers | WhatsApp reminders, service updates, invoices — all fired automatically |
+| Juggling spreadsheets & disjointed tools | One dashboard: bookings, chat, analytics, payments |
 
-## Admin Area
-- Dashboard with today’s bookings and actions `src/app/admin/dashboard/page.tsx:44`.
-- Start/Complete service triggers with toasts and server calls `src/app/admin/dashboard/page.tsx:131`.
-- Full bookings management `src/app/admin/bookings/page.tsx` (status transitions validated server‑side `src/app/api/bookings/[id]/route.ts:1`).
-- Payments overview `src/app/admin/payments/page.tsx`.
-- Analytics with totals and automation stats `src/app/admin/analytics/page.tsx:79` + API `src/app/api/admin/analytics/route.ts`.
-- Settings (business info, hours, slot duration, messaging toggles) `src/app/admin/settings/page.tsx` + API `src/app/api/admin/settings/route.ts:99`.
-- WhatsApp chat interface `src/app/admin/chat/page.tsx` and `src/components/chat/ChatInterface.tsx`.
+<br/>
 
-## Public Pages
-- Landing page highlights services and credibility (`src/app/page.tsx`).
-- Booking page path: `src/app/booking/page.tsx` and variant by business `src/app/booking/[businessId]/page.tsx:42`.
-- Confirmation page summarizes booking details `src/app/confirmation/page.tsx:171`.
-- Public share links under `src/app/public/*`.
+---
 
-## Data Models
-Key Prisma models in `prisma/schema.prisma`:
-- `Business`, `BusinessSettings` — company and configuration (`prisma/schema.prisma:189`).
-- `Service` — packages with price/duration (`prisma/schema.prisma:47`).
-- `Booking` — customer appointment, status, amounts (`prisma/schema.prisma:62`).
-- `Payment` — transactions, method, status (`prisma/schema.prisma:108`).
-- `Notification` — messages sent across channels (`prisma/schema.prisma:131`).
-- `WhatsAppChat`/`WhatsAppMessage` — chat and messages (`prisma/schema.prisma:154`).
+## ✨ Features
 
-## Environment Setup
-1) Copy env file on install or manually:
-- `npm run setup` (creates `.env.local` from `.env.example` if missing) `scripts/post-install.js`.
-- Verify required variables: `npm run check-env` `scripts/check-env.js`.
+<table>
+  <tr>
+    <td width="50%">
+      <h3>📅 Smart Booking Engine</h3>
+      <ul>
+        <li>Real-time calendar with service-based availability</li>
+        <li>Time-slot picker (auto-configurable intervals)</li>
+        <li>Conflict detection & resolution</li>
+        <li>Live availability streaming</li>
+      </ul>
+    </td>
+    <td width="50%">
+      <h3>💳 Stripe Payment Suite</h3>
+      <ul>
+        <li>Advance deposit (configurable %) + final balance</li>
+        <li>Payment intents with booking metadata</li>
+        <li>Signed webhooks for bulletproof processing</li>
+        <li>Full refund support</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <h3>📱 WhatsApp Automation</h3>
+      <ul>
+        <li>Booking confirmation on payment</li>
+        <li>24h appointment reminder (cron)</li>
+        <li>"Service started" live notification</li>
+        <li>Invoice with payment link on completion</li>
+        <li>Final receipt + Google review prompt</li>
+      </ul>
+    </td>
+    <td width="50%">
+      <h3>🏢 Multi-Tenant Admin</h3>
+      <ul>
+        <li>Per-business booking URLs <code>/booking/:id</code></li>
+        <li>Isolated data and branding</li>
+        <li>Role-based access (Admin / Staff)</li>
+        <li>Custom working hours, slots, payment %</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <h3>📊 Analytics Dashboard</h3>
+      <ul>
+        <li>Revenue charts + automation stats</li>
+        <li>Service breakdown & customer metrics</li>
+        <li>Real-time SSE notifications</li>
+        <li>Powered by Recharts</li>
+      </ul>
+    </td>
+    <td width="50%">
+      <h3>💬 WhatsApp Chat Inbox</h3>
+      <ul>
+        <li>Full 2-way messaging from admin</li>
+        <li>Conversation history with status</li>
+        <li>Unread count tracking</li>
+        <li>Message read receipts</li>
+      </ul>
+    </td>
+  </tr>
+</table>
 
-Required envs (`.env.example`):
-- `DATABASE_URL`, `NEXTAUTH_URL`, `NEXTAUTH_SECRET`.
-- Stripe: `NEXT_PUBLIC_STRIPE_PUBLIC_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`.
-- WhatsApp: `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_WEBHOOK_VERIFY_TOKEN`.
-- App: `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_BUSINESS_NAME`, `NEXT_PUBLIC_CURRENCY`, `ADVANCE_PAYMENT_PERCENTAGE`.
+---
 
-## Running Locally
-- Install dependencies: `npm install`.
-- Generate Prisma client: `npm run db:generate`.
-- Push schema: `npm run db:push`.
-- Seed data: `npm run db:seed`.
-- Start dev server: `npm run dev` (http://localhost:3000).
-- Listen to Stripe webhooks: `npm run stripe:listen`.
+<a name="quick-start"></a>
+## 🚀 Quick Start — 60 seconds
 
-Admin login (seeded): `admin@cardetailing.com` / `admin123` `scripts/post-install.js:43`.
+```bash
+# 1. Clone
+git clone https://github.com/adeendev/Gloss.git
+cd Gloss
 
-## Operational Flows
-- Cron reminders: POST to `/api/cron/send-reminders` with `Authorization: Bearer ${CRON_SECRET}`.
-- Status transitions enforced in `src/app/api/bookings/[id]/route.ts:1` with allowed paths from `CONFIRMED → IN_PROGRESS → COMPLETED`.
-- Real‑time admin notifications via Server‑Sent Events `src/app/api/admin/notifications/stream/route.ts:34`.
+# 2. Install
+npm install
 
-## Security Notes
-- Webhook signature validation in Stripe routes.
-- WhatsApp webhook verification token `WHATSAPP_WEBHOOK_VERIFY_TOKEN` `src/app/api/whatsapp/webhook/route.ts`.
-- No sensitive data logged; environment variables required for production.
+# 3. Set up environment
+cp .env.example .env.local
+# → edit .env.local with your Stripe / WhatsApp keys
 
-## Design Context
-- Responsive, friendly visuals with gradients and glass cards.
-- Clear affordances for primary actions (CTA, progress steps, toasts).
-- Admin flows use confirmations before mutating state, and server‑side validation of status transitions.
-- Service cards, calendars, and time‑slot pickers present availability and pricing concisely.
+# 4. Initialize DB (SQLite — zero config)
+npm run db:generate
+npm run db:push
+npm run db:seed
 
-## Testing Guide
-Manual checklist is provided in `WORKFLOW_TEST_SUMMARY.md`:
-- Create booking and complete advance payment.
-- Verify WhatsApp confirmation if configured.
-- Use admin dashboard to start/complete service.
-- Confirm final payment flow and review prompts.
+# 5. Start
+npm run dev
+```
 
-## Deployment
-- Use managed Postgres (Supabase, Railway, Neon) for `DATABASE_URL`.
-- Set Stripe and WhatsApp credentials in environment.
-- Configure webhook endpoints and cron runner.
-- Run `npm run build` and `npm start` in production.
+→ **Open [http://localhost:3000](http://localhost:3000)** 🎉
 
+> **Default admin login:** `admin@cardetailing.com` / `admin123`
+
+---
+
+## 🔐 Environment
+
+| Variable | Required | Description |
+|---|---|---|
+| `DATABASE_URL` | ✅ | `file:./dev.db` (SQLite) or PostgreSQL URL |
+| `NEXTAUTH_SECRET` | ✅ | Random 32+ char string (`openssl rand -base64 32`) |
+| `NEXTAUTH_URL` | ✅ | `http://localhost:3000` (dev) |
+| `NEXT_PUBLIC_STRIPE_PUBLIC_KEY` | ⚠️ payments | Stripe publishable key |
+| `STRIPE_SECRET_KEY` | ⚠️ payments | Stripe secret key |
+| `STRIPE_WEBHOOK_SECRET` | ⚠️ payments | Stripe webhook signing secret |
+| `WHATSAPP_PHONE_NUMBER_ID` | ⚠️ WhatsApp | Meta WhatsApp phone ID |
+| `WHATSAPP_ACCESS_TOKEN` | ⚠️ WhatsApp | WhatsApp API token |
+| `WHATSAPP_WEBHOOK_VERIFY_TOKEN` | ⚠️ WhatsApp | Your custom verify token |
+| `NEXT_PUBLIC_APP_URL` | ✅ | Your app URL |
+| `NEXT_PUBLIC_BUSINESS_NAME` | ✅ | Your business name |
+| `NEXT_PUBLIC_CURRENCY` | ✅ | e.g. `USD`, `GBP`, `EUR` |
+| `ADVANCE_PAYMENT_PERCENTAGE` | ✅ | e.g. `20` (default) |
+
+> Run `npm run check-env` to validate your config.
+
+<details>
+<summary><b>📌 Where to get API keys</b></summary>
+<br/>
+
+| Service | How |
+|---|---|
+| **Stripe** | [Dashboard → API Keys](https://dashboard.stripe.com/apikeys) |
+| **Stripe Webhook** | [Dashboard → Webhooks](https://dashboard.stripe.com/webhooks) — add `POST /api/payments/stripe/webhook` |
+| **WhatsApp** | [Meta Developers](https://developers.facebook.com/) → Create App → WhatsApp → API Setup |
+
+</details>
+
+---
+
+<a name="workflow"></a>
+## 🔄 Complete Workflow
+
+```
+           🧑 CUSTOMER                          👤 ADMIN
+               │                                    │
+               │  Selects service & time             │
+               │  Fills details                      │
+               │  Pays advance (20%) ─── Stripe ──>  │
+               │                                    │
+               ▼                                    │
+     ┌─────────────────┐                            │
+     │  ✅ Booking      │                            │
+     │    CONFIRMED     │                            │
+     │  📱 WhatsApp     │                            │
+     │    confirmation  │                            │
+     └─────────────────┘                            │
+               │                                    │
+     (24h later)                                    │
+     ┌─────────────────┐                            │
+     │  📱 WhatsApp     │                            │
+     │    reminder      │                            │
+     └─────────────────┘                            │
+               │                                    │
+               │                          ┌─────────▼─────────┐
+               │                          │  Clicks            │
+               │                          │  ▶ START SERVICE   │
+               │                          └─────────┬─────────┘
+               │                                    │
+     ┌─────────────────┐                            │
+     │  📱 "We're       │                            │
+     │    working on    │◀───────────────────────────┘
+     │    your car!"    │    Status → IN_PROGRESS
+     └─────────────────┘                            │
+               │                          ┌─────────▼─────────┐
+               │                          │  Clicks            │
+               │                          │  ✅ COMPLETE       │
+               │                          └─────────┬─────────┘
+               │                                    │
+     ┌─────────────────┐                            │
+     │  📱 Invoice +    │                            │
+     │    payment link  │◀───────────────────────────┘
+     │    Status DONE   │
+     └─────────────────┘
+               │
+               │  Pays remaining balance ─── Stripe ──>
+               │
+               ▼
+     ┌─────────────────┐
+     │  📱 Receipt +    │
+     │    Google Review │
+     │    link          │
+     │  ✅ Fully paid   │
+     └─────────────────┘
+```
+
+---
+
+<a name="admin-panel"></a>
+## 🏢 Admin Panel
+
+| Page | Path | What it does |
+|---|---|---|
+| **Login** | `/admin/login` | Secure JWT-based auth |
+| **Dashboard** | `/admin/dashboard` | Today's bookings, start/complete actions |
+| **Bookings** | `/admin/bookings` | Full CRUD + status transitions |
+| **Payments** | `/admin/payments` | All transactions at a glance |
+| **Analytics** | `/admin/analytics` | Revenue, service breakdown, automation stats |
+| **Settings** | `/admin/settings` | Business hours, slot length, messaging toggles |
+| **Chat** | `/admin/chat` | WhatsApp 2-way inbox |
+
+---
+
+<a name="stack"></a>
+## 🛠 Tech Stack
+
+| Layer | Technology |
+|---|---|
+| **Framework** | Next.js 14 (App Router) |
+| **Language** | TypeScript 5.x |
+| **Database** | Prisma ORM + SQLite / PostgreSQL |
+| **UI** | Tailwind CSS + Radix UI + Lucide icons |
+| **Auth** | NextAuth.js 4 (JWT, credentials) |
+| **Payments** | Stripe (Payment Intents + Webhooks) |
+| **Messaging** | WhatsApp Business Cloud API |
+| **Charts** | Recharts |
+| **Validation** | Zod |
+| **Notifications** | Sonner + SweetAlert2 |
+
+---
+
+<a name="api"></a>
+## 🔌 API Reference
+
+### Bookings
+
+```
+GET    /api/services?businessId=xxx       → List services
+GET    /api/bookings/available-slots      → Available time slots
+POST   /api/bookings                      → Create booking
+GET    /api/bookings/:id                  → Booking detail
+PATCH  /api/bookings/:id                  → Update status
+POST   /api/bookings/:id/start-service    → Start (admin)
+POST   /api/bookings/:id/complete-service → Complete (admin)
+```
+
+### Payments
+
+```
+POST   /api/payments/stripe/create-intent            → Payment intent
+POST   /api/payments/stripe/create-intent-prebooking → Pre-booking intent
+POST   /api/payments/stripe/webhook                  → Stripe events
+GET    /api/payments/stripe/success                  → Post-payment handler
+```
+
+### WhatsApp
+
+```
+POST   /api/whatsapp/send                     → Send message
+POST   /api/whatsapp/webhook                  → Inbound webhook
+GET    /api/whatsapp/messages?chatId=xxx      → Chat history
+POST   /api/whatsapp/chats/:chatId/read       → Mark read
+```
+
+### Admin & Cron
+
+```
+GET    /api/admin/analytics                → Stats & revenue
+GET    /api/admin/settings                 → Get settings
+PATCH  /api/admin/settings                 → Update settings
+GET    /api/admin/payments                 → All payments
+GET    /api/admin/notifications/stream     → SSE real-time
+POST   /api/cron/send-reminders            → 24h reminder job
+```
+
+---
+
+## 📁 Structure
+
+```
+gloss/
+├── prisma/
+│   ├── schema.prisma        # 9 data models
+│   └── seed.ts              # Demo data seeder
+├── src/
+│   ├── app/
+│   │   ├── page.tsx          # Landing
+│   │   ├── booking/          # Customer flow
+│   │   ├── confirmation/     # Post-booking
+│   │   ├── admin/            # 7 admin pages
+│   │   ├── public/           # Shareable links
+│   │   └── api/              # 20+ route handlers
+│   ├── components/
+│   │   ├── ui/               # 14 primitives (Radix)
+│   │   ├── booking/          # Booking widgets
+│   │   ├── admin/            # Dashboard widgets
+│   │   └── chat/             # WhatsApp chat UI
+│   ├── lib/
+│   │   ├── prisma.ts         # DB singleton
+│   │   ├── stripe.ts         # Stripe helpers
+│   │   ├── whatsapp.ts       # WhatsApp client
+│   │   ├── auth.ts           # NextAuth config
+│   │   ├── utils.ts          # Formatting, slots
+│   │   └── validators.ts     # Zod schemas
+│   └── middleware.ts         # Route guard
+├── scripts/                  # Setup tools
+├── whatsapp-templates/       # 6 message templates
+├── .env.example
+└── start.sh                  # Auto-setup (bash + bat)
+```
+
+---
+
+## 🗄 Data Models
+
+```
+Business ─── Service (price, duration)
+    │
+    ├── Booking (PENDING → CONFIRMED → IN_PROGRESS → COMPLETED → CANCELLED)
+    │     ├── Payment (advance / final)
+    │     └── Notification (dedup logs)
+    │
+    ├── User (admin / staff)
+    ├── BusinessSettings (hours, config, toggles)
+    └── WhatsAppChat
+          └── WhatsAppMessage (2-way)
+```
+
+---
+
+## 📱 WhatsApp Templates
+
+| Template | Trigger |
+|---|---|
+| `booking_confirmation` | Advance payment success |
+| `booking_reminder` | 24h before appointment |
+| `service_started` | Admin starts service |
+| `completion_invoice` | Service completed |
+| `final_payment_confirmation` | Balance paid |
+
+```bash
+npm run whatsapp:templates   # generate template JSON files
+```
+
+> Templates must be submitted & approved via [Meta Business Manager](https://business.facebook.com/wa/manage/message-templates/) (24–48h).
+
+---
+
+<a name="deploy"></a>
+## 🚀 Production Deployment
+
+```bash
+npx vercel --prod
+```
+
+### Checklist
+
+- [ ] Swap SQLite → PostgreSQL (update `DATABASE_URL`)
+- [ ] Set all env vars in Vercel dashboard
+- [ ] Configure Stripe webhook → `yourdomain.com/api/payments/stripe/webhook`
+- [ ] Configure WhatsApp webhook → `yourdomain.com/api/whatsapp/webhook`
+- [ ] Submit WhatsApp templates for Meta approval
+- [ ] Change default admin password
+- [ ] Set up cron job for reminders (`POST /api/cron/send-reminders`)
+
+---
+
+## 🧪 Test Mode
+
+```bash
+# Stripe test card
+Card:  4242 4242 4242 4242
+Exp:   any future date
+CVC:   any 3 digits
+```
+
+---
+
+## 📄 License
+
+**MIT** — Free for personal and commercial use.
+
+---
+
+<br/>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/built%20for-detailers-6b21a8?style=for-the-badge"/>
+  <br/><br/>
+  <b>Gloss</b> — made with precision, like a showroom finish.
+</p>
+
+<br/>
